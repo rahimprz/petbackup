@@ -8,6 +8,7 @@ import CartMismatchBanner from "@modules/layout/components/cart-mismatch-banner"
 import { Footer } from "@components/Footer"
 import { Header } from "@components/Header"
 import FreeShippingPriceNudge from "@modules/shipping/components/free-shipping-price-nudge"
+import { ToastProvider } from "@components/ui/toast"
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -25,7 +26,7 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
   }
 
   return (
-    <>
+    <ToastProvider>
       <Header cart={cart} />
       {customer && cart && (
         <CartMismatchBanner customer={customer} cart={cart} />
@@ -40,6 +41,6 @@ export default async function PageLayout(props: { children: React.ReactNode }) {
       )}
       {props.children}
       <Footer />
-    </>
+    </ToastProvider>
   )
 }

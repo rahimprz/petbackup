@@ -4,12 +4,15 @@ import FeaturedProducts from "@modules/home/components/featured-products"
 import { listCollections } from "@lib/data/collections"
 import { getRegion } from "@lib/data/regions"
 import { Hero } from "@components/sections/Hero"
+import { GameSelector } from "@components/sections/GameSelector"
+import { FeaturedPets } from "@components/sections/FeaturedPets"
 import { FAQ } from "@components/sections/FAQ"
 import { HowItWorks } from "@components/sections/HowItWorks"
 import { Stats } from "@components/sections/Stats"
 import { Testimonials } from "@components/sections/Testimonials"
 import { TrustSignals } from "@components/sections/TrustSignals"
 import { Newsletter } from "@components/sections/Newsletter"
+import { TutorialSection } from "@components/sections/TutorialSection"
 import { ScrollToTop } from "@components/ScrollToTop"
 
 export const metadata: Metadata = {
@@ -38,12 +41,15 @@ export default async function Home(props: {
   return (
     <>
       <Hero />
+      <GameSelector />
+      <FeaturedPets />
       <div id="select-game" className="py-12 relative z-10">
         <ul className="flex flex-col gap-x-6">
           <FeaturedProducts collections={collections} region={region} />
         </ul>
       </div>
       <HowItWorks />
+      <TutorialSection />
       <Stats />
       <Testimonials />
       <FAQ />
