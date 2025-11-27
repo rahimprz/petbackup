@@ -79,7 +79,7 @@ export function GameSelector() {
             <span className="bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent">
               Games
             </span>{" "}
-            
+
           </h2>
 
           {/* Subtitle */}
@@ -95,17 +95,18 @@ export function GameSelector() {
           </div>
         </motion.div>
 
-        {/* Best Sellers Card */}
-        <div className="max-w-2xl mx-auto mb-12">
+        {/* Game Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16">
+          {/* Plants vs Brainrots Card */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
             whileHover={{ y: -8, scale: 1.02 }}
-            className="group relative"
+            className="group relative h-full"
           >
-            <Card className="border-2 border-primary/50 hover:border-primary cursor-pointer bg-gradient-to-br from-card via-card to-secondary/10 hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 overflow-hidden relative">
+            <Card className="h-full border-2 border-primary/50 hover:border-primary cursor-pointer bg-gradient-to-br from-card via-card to-secondary/10 hover:shadow-xl hover:shadow-primary/20 transition-all duration-300 overflow-hidden relative flex flex-col">
               {/* Gradient overlay */}
               <motion.div
                 className="absolute inset-0 bg-gradient-to-br from-green-500/20 via-emerald-500/20 to-teal-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -120,74 +121,129 @@ export function GameSelector() {
                 transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
               />
 
-              <CardContent className="flex flex-col p-8 space-y-6 relative z-10">
-                {/* Content */}
-                <div className="text-center space-y-4">
-                  <h3 className="text-3xl md:text-4xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
+              <CardContent className="flex flex-col flex-grow p-8 space-y-6 relative z-10">
+                <div className="text-center space-y-4 flex-grow">
+                  <h3 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-primary transition-colors duration-300">
                     Plants vs Brainrots
                   </h3>
-                  
-                  <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
+                  <p className="text-base text-muted-foreground leading-relaxed">
                     Virtual pets and items for Plants vs Brainrots
                   </p>
 
                   {/* Stats */}
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: 0.2 }}
-                    className="grid grid-cols-3 gap-4 pt-4 mt-4 border-t border-primary/20"
-                  >
+                  <div className="grid grid-cols-3 gap-2 pt-4 mt-4 border-t border-primary/20">
                     <div className="text-center">
-                      <div className="flex items-center justify-center gap-1.5 mb-1">
-                        <Sparkles className="h-4 w-4 text-green-400" />
-                        <span className="text-lg font-bold text-foreground">500+</span>
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Sparkles className="h-3 w-3 text-green-400" />
+                        <span className="text-sm font-bold text-foreground">500+</span>
                       </div>
-                      <p className="text-xs text-muted-foreground">Items</p>
+                      <p className="text-[10px] text-muted-foreground">Items</p>
                     </div>
                     <div className="text-center">
-                      <div className="flex items-center justify-center gap-1.5 mb-1">
-                        <Users className="h-4 w-4 text-blue-400" />
-                        <span className="text-lg font-bold text-foreground">100+</span>
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Users className="h-3 w-3 text-blue-400" />
+                        <span className="text-sm font-bold text-foreground">100+</span>
                       </div>
-                      <p className="text-xs text-muted-foreground">Pets</p>
+                      <p className="text-[10px] text-muted-foreground">Pets</p>
                     </div>
                     <div className="text-center">
-                      <div className="flex items-center justify-center gap-1.5 mb-1">
-                        <TrendingUp className="h-4 w-4 text-yellow-400" />
-                        <span className="text-lg font-bold text-foreground">10k+</span>
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <TrendingUp className="h-3 w-3 text-yellow-400" />
+                        <span className="text-sm font-bold text-foreground">10k+</span>
                       </div>
-                      <p className="text-xs text-muted-foreground">Sales</p>
+                      <p className="text-[10px] text-muted-foreground">Sales</p>
                     </div>
-                  </motion.div>
+                  </div>
                 </div>
 
                 {/* CTA Button */}
-                <div className="pt-4">
-                  <Link href="/products" className="block w-full">
+                <div className="pt-4 mt-auto">
+                  <Link href="/store" className="block w-full">
                     <Button
                       size="lg"
                       className="w-full relative overflow-hidden bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 shadow-md shadow-primary/30 hover:shadow-lg hover:shadow-primary/50 transition-all duration-300 group/btn"
                     >
                       <span className="relative z-10 flex items-center justify-center gap-2">
                         Shop Now
-                        <motion.div
-                          animate={{ x: [0, 4, 0] }}
-                          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-                        >
-                          <ArrowRight className="h-4 w-4" />
-                        </motion.div>
+                        <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
                       </span>
-                      <motion.span
-                        className="pointer-events-none absolute inset-0"
-                        animate={{ opacity: [0, 1, 0] }}
-                        transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
-                        style={{
-                          background:
-                            "radial-gradient(100px 40px at 10% 50%, rgba(255,255,255,0.2), transparent), radial-gradient(100px 40px at 90% 50%, rgba(255,255,255,0.2), transparent)",
-                        }}
-                      />
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          {/* Steal a Brainrot Card */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            whileHover={{ y: -8, scale: 1.02 }}
+            className="group relative h-full"
+          >
+            <Card className="h-full border-2 border-red-500/50 hover:border-red-500 cursor-pointer bg-gradient-to-br from-card via-card to-secondary/10 hover:shadow-xl hover:shadow-red-500/20 transition-all duration-300 overflow-hidden relative flex flex-col">
+              {/* Gradient overlay */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-br from-red-500/20 via-orange-500/20 to-yellow-500/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                initial={false}
+              />
+
+              {/* Glow effect */}
+              <motion.div
+                className="absolute -inset-0.5 bg-gradient-to-r from-red-500/50 to-orange-500/50 opacity-0 group-hover:opacity-40 blur-lg transition-opacity duration-300 rounded-xl"
+                initial={false}
+                animate={{ opacity: [0, 0.4, 0] }}
+                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+              />
+
+              <CardContent className="flex flex-col flex-grow p-8 space-y-6 relative z-10">
+                <div className="text-center space-y-4 flex-grow">
+                  <h3 className="text-2xl md:text-3xl font-bold text-foreground group-hover:text-red-400 transition-colors duration-300">
+                    Steal a Brainrot
+                  </h3>
+                  <p className="text-base text-muted-foreground leading-relaxed">
+                    Exclusive items and steals from Steal a Brainrot
+                  </p>
+
+                  {/* Stats */}
+                  <div className="grid grid-cols-3 gap-2 pt-4 mt-4 border-t border-red-500/20">
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Sparkles className="h-3 w-3 text-red-400" />
+                        <span className="text-sm font-bold text-foreground">200+</span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">Items</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <Users className="h-3 w-3 text-orange-400" />
+                        <span className="text-sm font-bold text-foreground">50+</span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">Pets</p>
+                    </div>
+                    <div className="text-center">
+                      <div className="flex items-center justify-center gap-1 mb-1">
+                        <TrendingUp className="h-3 w-3 text-yellow-400" />
+                        <span className="text-sm font-bold text-foreground">5k+</span>
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">Sales</p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* CTA Button */}
+                <div className="pt-4 mt-auto">
+                  <Link href="/store" className="block w-full">
+                    <Button
+                      size="lg"
+                      className="w-full relative overflow-hidden bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 shadow-md shadow-red-500/30 hover:shadow-lg hover:shadow-red-500/50 transition-all duration-300 group/btn"
+                    >
+                      <span className="relative z-10 flex items-center justify-center gap-2">
+                        Shop Now
+                        <ArrowRight className="h-4 w-4 group-hover/btn:translate-x-1 transition-transform" />
+                      </span>
                     </Button>
                   </Link>
                 </div>

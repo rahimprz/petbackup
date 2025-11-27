@@ -68,8 +68,16 @@ export default async function PaginatedProducts({
 
   return (
     <>
+      {/* Product count badge */}
+      <div className="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-secondary/50 border border-border/50">
+        <span className="text-sm font-medium text-muted-foreground">
+          Showing <span className="text-foreground font-semibold">{products.length}</span> of{" "}
+          <span className="text-foreground font-semibold">{count}</span> products
+        </span>
+      </div>
+
       <ul
-        className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-8"
+        className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-4 gap-x-6 gap-y-12"
         data-testid="products-list"
       >
         {products.map((p) => {
@@ -80,12 +88,15 @@ export default async function PaginatedProducts({
           )
         })}
       </ul>
+
       {totalPages > 1 && (
-        <Pagination
-          data-testid="product-pagination"
-          page={page}
-          totalPages={totalPages}
-        />
+        <div className="mt-12">
+          <Pagination
+            data-testid="product-pagination"
+            page={page}
+            totalPages={totalPages}
+          />
+        </div>
       )}
     </>
   )

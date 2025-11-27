@@ -17,18 +17,22 @@ const Register = ({ setCurrentView }: Props) => {
 
   return (
     <div
-      className="max-w-sm flex flex-col items-center"
+      className="w-full flex flex-col items-center"
       data-testid="register-page"
     >
-      <h1 className="text-large-semi uppercase mb-6">
-        Become a Medusa Store Member
-      </h1>
-      <p className="text-center text-base-regular text-ui-fg-base mb-4">
-        Create your Medusa Store Member profile, and get access to an enhanced
-        shopping experience.
-      </p>
-      <form className="w-full flex flex-col" action={formAction}>
-        <div className="flex flex-col w-full gap-y-2">
+      {/* Header */}
+      <div className="text-center mb-8">
+        <h1 className="text-3xl font-bold bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent mb-3">
+          Join PetShop
+        </h1>
+        <p className="text-muted-foreground text-base">
+          Create your account and get access to exclusive features
+        </p>
+      </div>
+
+      {/* Registration Form */}
+      <form className="w-full space-y-5" action={formAction}>
+        <div className="flex flex-col w-full gap-y-4">
           <Input
             label="First name"
             name="first_name"
@@ -67,38 +71,45 @@ const Register = ({ setCurrentView }: Props) => {
             data-testid="password-input"
           />
         </div>
+
         <ErrorMessage error={message} data-testid="register-error" />
-        <span className="text-center text-ui-fg-base text-small-regular mt-6">
-          By creating an account, you agree to Medusa Store&apos;s{" "}
+
+        {/* Terms and Privacy */}
+        <p className="text-xs text-muted-foreground text-center leading-relaxed">
+          By creating an account, you agree to PetShop&apos;s{" "}
           <LocalizedClientLink
             href="/content/privacy-policy"
-            className="underline"
+            className="text-accent hover:text-accent/80 underline underline-offset-2 transition-colors duration-200"
           >
             Privacy Policy
           </LocalizedClientLink>{" "}
           and{" "}
           <LocalizedClientLink
             href="/content/terms-of-use"
-            className="underline"
+            className="text-accent hover:text-accent/80 underline underline-offset-2 transition-colors duration-200"
           >
             Terms of Use
           </LocalizedClientLink>
-          .
-        </span>
-        <SubmitButton className="w-full mt-6" data-testid="register-button">
-          Join
+        </p>
+
+        <SubmitButton
+          className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground font-semibold py-3 rounded-lg transition-all duration-300 hover:shadow-lg hover:shadow-primary/25"
+          data-testid="register-button"
+        >
+          Create Account
         </SubmitButton>
       </form>
-      <span className="text-center text-ui-fg-base text-small-regular mt-6">
-        Already a member?{" "}
+
+      {/* Footer */}
+      <div className="text-center text-sm text-muted-foreground mt-8">
+        Already have an account?{" "}
         <button
           onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
-          className="underline"
+          className="text-accent hover:text-accent/80 font-semibold underline underline-offset-4 transition-colors duration-200"
         >
           Sign in
         </button>
-        .
-      </span>
+      </div>
     </div>
   )
 }

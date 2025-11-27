@@ -32,8 +32,10 @@ const RefinementList = ({ sortBy, 'data-testid': dataTestId }: RefinementListPro
   }
 
   return (
-    <div className="flex small:flex-col gap-12 py-4 mb-8 small:px-0 pl-6 small:min-w-[250px] small:ml-[1.675rem]">
-      <SortProducts sortBy={sortBy} setQueryParams={setQueryParams} data-testid={dataTestId} />
+    <div className="flex small:flex-col gap-12 py-4 mb-8 small:px-0 pl-6 small:min-w-[280px] small:ml-[1.675rem]">
+      <div className="relative p-6 rounded-2xl bg-gradient-to-br from-secondary/30 via-secondary/10 to-background border border-border/50 backdrop-blur-sm">
+        <SortProducts sortBy={sortBy} setQueryParams={setQueryParams} data-testid={dataTestId} />
+      </div>
     </div>
   )
 }

@@ -44,23 +44,23 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             name={name}
             placeholder=" "
             required={required}
-            className="pt-4 pb-1 block w-full h-11 px-4 mt-0 bg-ui-bg-field border rounded-md appearance-none focus:outline-none focus:ring-0 focus:shadow-borders-interactive-with-active border-ui-border-base hover:bg-ui-bg-field-hover"
+            className="pt-4 pb-1 block w-full h-12 px-4 mt-0 bg-card/80 backdrop-blur-sm border border-border rounded-lg appearance-none focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all duration-300 text-foreground placeholder:text-muted-foreground hover:bg-card hover:border-primary/30"
             {...props}
             ref={inputRef}
           />
           <label
             htmlFor={name}
             onClick={() => inputRef.current?.focus()}
-            className="flex items-center justify-center mx-3 px-1 transition-all absolute duration-300 top-3 -z-1 origin-0 text-ui-fg-subtle"
+            className="flex items-center justify-center mx-3 px-1 transition-all absolute duration-300 top-3 -z-1 origin-0 text-muted-foreground"
           >
             {label}
-            {required && <span className="text-rose-500">*</span>}
+            {required && <span className="text-rose-500 ml-1">*</span>}
           </label>
           {type === "password" && (
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="text-ui-fg-subtle px-4 focus:outline-none transition-all duration-150 outline-none focus:text-ui-fg-base absolute right-0 top-3"
+              className="text-muted-foreground hover:text-foreground px-4 focus:outline-none transition-all duration-200 outline-none absolute right-0 top-3"
             >
               {showPassword ? <Eye /> : <EyeOff />}
             </button>

@@ -1,11 +1,23 @@
-"use client"
+import { listProducts } from "@lib/data/products"
+import { getRegion } from "@lib/data/regions"
+import ProductPreview from "@modules/products/components/product-preview"
+import { Text } from "@medusajs/ui"
 
-import { motion } from "framer-motion"
+export async function FeaturedPets({ countryCode }: { countryCode: string }) {
+  const region = await getRegion(countryCode)
 
-export function FeaturedPets() {
-  // This is a placeholder for the Best Sellers section
-  // In a full implementation, this would fetch top-rated products from Medusa
-  // For now, it shows a visual banner
+  if (!region) {
+    return null
+  }
+
+  const {
+    response: { products },
+  } = await listProducts({
+    countryCode,
+    queryParams: {
+      limit: 4,
+    },
+  })
 
   return (
     <section className="py-16 bg-gradient-to-br from-background via-secondary/5 to-background relative overflow-hidden">
@@ -16,25 +28,33 @@ export function FeaturedPets() {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center"
-        >
+        <div className="text-center mb-12">
           <div className="inline-block mb-4">
             <span className="text-sm font-semibold text-green-400 bg-green-500/10 px-4 py-2 rounded-full border border-green-500/20">
               ⭐ BEST SELLERS
             </span>
           </div>
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Top Rated <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">Products</span>
+            Best <span className="bg-gradient-to-r from-green-400 to-emerald-400 bg-clip-text text-transparent">Sellers</span>
           </h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Browse our collection below to discover the most popular items
           </p>
-        </motion.div>
+        </div>
+
+        {products && products.length > 0 ? (
+          <ul className="grid grid-cols-2 small:grid-cols-4 gap-x-6 gap-y-8">
+            {products.map((product) => (
+              <li key={product.id}>
+                <ProductPreview product={product} region={region} isFeatured />
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="text-center text-muted-foreground">
+            No products found.
+          </div>
+        )}
       </div>
     </section>
   )

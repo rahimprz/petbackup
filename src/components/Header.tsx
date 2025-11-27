@@ -31,9 +31,12 @@ export function Header({ cart }: HeaderProps) {
             <motion.div
               whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 17 }}
-              className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
             >
-              PetShop
+              <img
+                src="https://i.ibb.co/Qjd4QGFm/cooltext496272348833075.png"
+                alt="PetShop Logo"
+                className="h-12 w-auto"
+              />
             </motion.div>
           </Link>
 

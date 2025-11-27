@@ -56,38 +56,37 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
   }
 
   return (
-    <div className="w-full bg-white flex flex-col">
+    <div className="w-full bg-transparent flex flex-col">
       <div className="txt-medium">
         <form action={(a) => addPromotionCode(a)} className="w-full mb-5">
           <Label className="flex gap-x-1 my-2 items-center">
             <button
               onClick={() => setIsOpen(!isOpen)}
               type="button"
-              className="txt-medium text-ui-fg-interactive hover:text-ui-fg-interactive-hover"
+              className="txt-medium text-accent hover:text-accent/80 transition-colors flex items-center gap-2 font-medium"
               data-testid="add-discount-button"
             >
-              Add Promotion Code(s)
+              <span>{isOpen ? "−" : "+"}</span>
+              Add Promotion Code
             </button>
-
-            {/* <Tooltip content="You can add multiple promotion codes">
-              <InformationCircleSolid color="var(--fg-muted)" />
-            </Tooltip> */}
           </Label>
 
           {isOpen && (
-            <>
-              <div className="flex w-full gap-x-2">
+            <div className="animate-fade-in-up">
+              <div className="flex w-full gap-x-2 mt-2">
                 <Input
-                  className="size-full"
+                  className="w-full bg-card/50 border-border/50 focus:border-primary/50 text-foreground placeholder:text-muted-foreground/50 h-10 rounded-lg"
                   id="promotion-input"
                   name="code"
                   type="text"
-                  autoFocus={false}
+                  placeholder="Enter code"
+                  autoFocus={true}
                   data-testid="discount-input"
                 />
                 <SubmitButton
                   variant="secondary"
                   data-testid="discount-apply-button"
+                  className="h-10 px-4 bg-secondary hover:bg-secondary/80 text-secondary-foreground border border-border/50 rounded-lg"
                 >
                   Apply
                 </SubmitButton>
@@ -97,14 +96,14 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                 error={errorMessage}
                 data-testid="discount-error-message"
               />
-            </>
+            </div>
           )}
         </form>
 
         {promotions.length > 0 && (
           <div className="w-full flex items-center">
             <div className="flex flex-col w-full">
-              <Heading className="txt-medium mb-2">
+              <Heading className="txt-medium mb-2 text-foreground">
                 Promotion(s) applied:
               </Heading>
 
@@ -126,17 +125,17 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
                         (
                         {promotion.application_method?.value !== undefined &&
                           promotion.application_method.currency_code !==
-                            undefined && (
+                          undefined && (
                             <>
                               {promotion.application_method.type ===
-                              "percentage"
+                                "percentage"
                                 ? `${promotion.application_method.value}%`
                                 : convertToLocale({
-                                    amount: +promotion.application_method.value,
-                                    currency_code:
-                                      promotion.application_method
-                                        .currency_code,
-                                  })}
+                                  amount: +promotion.application_method.value,
+                                  currency_code:
+                                    promotion.application_method
+                                      .currency_code,
+                                })}
                             </>
                           )}
                         )
