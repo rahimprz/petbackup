@@ -28,6 +28,7 @@ const Payment = ({
   const [error, setError] = useState<string | null>(null)
   const [cardBrand, setCardBrand] = useState<string | null>(null)
   const [cardComplete, setCardComplete] = useState(false)
+  const [isInitiating, setIsInitiating] = useState(false)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(
     activeSession?.provider_id ?? ""
   )
@@ -41,10 +42,19 @@ const Payment = ({
   const setPaymentMethod = async (method: string) => {
     setError(null)
     setSelectedPaymentMethod(method)
-    if (isStripeLike(method)) {
-      await initiatePaymentSession(cart, {
-        provider_id: method,
-      })
+
+    // Prevent concurrent payment session initialization
+    if (isStripeLike(method) && !isInitiating) {
+      setIsInitiating(true)
+      try {
+        await initiatePaymentSession(cart, {
+          provider_id: method,
+        })
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setIsInitiating(false)
+      }
     }
   }
 
@@ -71,6 +81,11 @@ const Payment = ({
   }
 
   const handleSubmit = async () => {
+    // Prevent submission if already initiating a payment session
+    if (isInitiating) {
+      return
+    }
+
     setIsLoading(true)
     try {
       const shouldInputCard =
@@ -79,10 +94,16 @@ const Payment = ({
       const checkActiveSession =
         activeSession?.provider_id === selectedPaymentMethod
 
-      if (!checkActiveSession) {
-        await initiatePaymentSession(cart, {
-          provider_id: selectedPaymentMethod,
-        })
+      // Only initiate if not already active and not currently initiating
+      if (!checkActiveSession && !isInitiating) {
+        setIsInitiating(true)
+        try {
+          await initiatePaymentSession(cart, {
+            provider_id: selectedPaymentMethod,
+          })
+        } finally {
+          setIsInitiating(false)
+        }
       }
 
       if (!shouldInputCard) {
