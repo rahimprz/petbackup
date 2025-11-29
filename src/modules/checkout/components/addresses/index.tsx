@@ -4,7 +4,7 @@ import { setAddresses } from "@lib/data/cart"
 import compareAddresses from "@lib/util/compare-addresses"
 import { CheckCircleSolid } from "@medusajs/icons"
 import { HttpTypes } from "@medusajs/types"
-import { Heading, Text, useToggleState } from "@medusajs/ui"
+import { Button, Heading, Text, useToggleState } from "@medusajs/ui"
 import Divider from "@modules/common/components/divider"
 import Spinner from "@modules/common/icons/spinner"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
@@ -34,7 +34,11 @@ const Addresses = ({
   )
 
   const handleEdit = () => {
-    router.push(pathname + "?step=address")
+    router.push(pathname + "?step=address", { scroll: false })
+  }
+
+  const handleContinueToPayment = () => {
+    router.push(pathname + "?step=payment", { scroll: false })
   }
 
   const [message, formAction] = useActionState(setAddresses, null)
@@ -84,7 +88,7 @@ const Addresses = ({
               </div>
             )}
             <SubmitButton className="mt-6 w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground font-semibold py-3 rounded-lg shadow-lg shadow-primary/25" data-testid="submit-address-button">
-              Continue to delivery
+              Continue to payment
             </SubmitButton>
             <ErrorMessage error={message} data-testid="address-error-message" />
           </div>
@@ -174,6 +178,15 @@ const Addresses = ({
               </div>
             )}
           </div>
+          {/* Add Continue button when address is complete */}
+          {cart && cart.shipping_address && !isOpen && (
+            <Button
+              onClick={handleContinueToPayment}
+              className="mt-6 w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary text-primary-foreground font-semibold"
+            >
+              Continue to Payment
+            </Button>
+          )}
         </div>
       )}
       <Divider className="mt-8 border-border/20" />

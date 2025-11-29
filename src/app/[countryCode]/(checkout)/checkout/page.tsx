@@ -4,13 +4,17 @@ import PaymentWrapper from "@modules/checkout/components/payment-wrapper"
 import CheckoutForm from "@modules/checkout/templates/checkout-form"
 import CheckoutSummary from "@modules/checkout/templates/checkout-summary"
 import { Metadata } from "next"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 
 export const metadata: Metadata = {
   title: "Checkout",
 }
 
-export default async function Checkout() {
+export default async function Checkout({
+  searchParams,
+}: {
+  searchParams: { step?: string }
+}) {
   const cart = await retrieveCart()
 
   if (!cart) {
@@ -18,6 +22,22 @@ export default async function Checkout() {
   }
 
   const customer = await retrieveCustomer()
+
+  // Redirect from old delivery step to payment (delivery no longer exists)
+  if (searchParams.step === "delivery") {
+    redirect("?step=payment")
+  }
+
+  // Auto-redirect to appropriate step if no step is specified
+  if (!searchParams.step) {
+    if (cart.shipping_address && cart.email) {
+      // Address is complete, go to payment
+      redirect("?step=payment")
+    } else {
+      // Start with address
+      redirect("?step=address")
+    }
+  }
 
   return (
     <div className="grid grid-cols-1 small:grid-cols-[1fr_416px] content-container gap-x-40 py-12">
