@@ -77,58 +77,6 @@ const ProductTabs = ({ product }: ProductTabsProps) => {
 const ProductInfoTab = ({ product }: ProductTabsProps) => {
   return (
     <div className="text-small-regular py-8 max-w-6xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-        {/* Specifications Card */}
-        <div className="bg-secondary/10 border border-border/10 rounded-2xl p-6 hover:bg-secondary/20 transition-colors duration-300">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2.5 bg-primary/10 rounded-lg">
-              <Package className="w-5 h-5 text-primary" />
-            </div>
-            <h3 className="text-lg font-bold text-foreground">Specifications</h3>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex justify-between items-center py-3 border-b border-border/10 last:border-0">
-              <span className="text-muted-foreground font-medium">Material</span>
-              <span className="text-foreground font-semibold">{product.material || "-"}</span>
-            </div>
-            <div className="flex justify-between items-center py-3 border-b border-border/10 last:border-0">
-              <span className="text-muted-foreground font-medium">Country of origin</span>
-              <span className="text-foreground font-semibold">{product.origin_country || "-"}</span>
-            </div>
-            <div className="flex justify-between items-center py-3 border-b border-border/10 last:border-0">
-              <span className="text-muted-foreground font-medium">Type</span>
-              <span className="text-foreground font-semibold">{product.type?.value || "-"}</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Dimensions Card */}
-        <div className="bg-secondary/10 border border-border/10 rounded-2xl p-6 hover:bg-secondary/20 transition-colors duration-300">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="p-2.5 bg-primary/10 rounded-lg">
-              <Truck className="w-5 h-5 text-primary" />
-            </div>
-            <h3 className="text-lg font-bold text-foreground">Dimensions & Weight</h3>
-          </div>
-
-          <div className="space-y-4">
-            <div className="flex justify-between items-center py-3 border-b border-border/10 last:border-0">
-              <span className="text-muted-foreground font-medium">Weight</span>
-              <span className="text-foreground font-semibold">{product.weight ? `${product.weight} g` : "-"}</span>
-            </div>
-            <div className="flex justify-between items-center py-3 border-b border-border/10 last:border-0">
-              <span className="text-muted-foreground font-medium">Dimensions</span>
-              <span className="text-foreground font-semibold">
-                {product.length && product.width && product.height
-                  ? `${product.length}L x ${product.width}W x ${product.height}H`
-                  : "-"}
-              </span>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* Description Section */}
       <div className="bg-secondary/5 border border-border/5 rounded-2xl p-8">
         <h3 className="text-xl font-bold text-foreground mb-6 flex items-center gap-3">

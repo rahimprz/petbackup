@@ -2,9 +2,7 @@ import { HttpTypes } from "@medusajs/types"
 import { Container } from "@medusajs/ui"
 import Checkbox from "@modules/common/components/checkbox"
 import Input from "@modules/common/components/input"
-import { mapKeys } from "lodash"
 import React, { useEffect, useMemo, useState } from "react"
-import AddressSelect from "../address-select"
 import CountrySelect from "../country-select"
 
 const ShippingAddress = ({
@@ -19,16 +17,10 @@ const ShippingAddress = ({
   onChange: () => void
 }) => {
   const [formData, setFormData] = useState<Record<string, any>>({
-    "shipping_address.first_name": cart?.shipping_address?.first_name || "",
-    "shipping_address.last_name": cart?.shipping_address?.last_name || "",
-    "shipping_address.address_1": cart?.shipping_address?.address_1 || "",
-    "shipping_address.company": cart?.shipping_address?.company || "",
-    "shipping_address.postal_code": cart?.shipping_address?.postal_code || "",
-    "shipping_address.city": cart?.shipping_address?.city || "",
-    "shipping_address.country_code": cart?.shipping_address?.country_code || "",
-    "shipping_address.province": cart?.shipping_address?.province || "",
-    "shipping_address.phone": cart?.shipping_address?.phone || "",
+    roblox_username: (cart?.metadata?.roblox_username as string) || "",
+    discord_username: (cart?.metadata?.discord_username as string) || "",
     email: cart?.email || "",
+    "shipping_address.country_code": cart?.shipping_address?.country_code || "",
   })
 
   const countriesInRegion = useMemo(
@@ -36,50 +28,30 @@ const ShippingAddress = ({
     [cart?.region]
   )
 
-  // check if customer has saved addresses that are in the current region
-  const addressesInRegion = useMemo(
-    () =>
-      customer?.addresses.filter(
-        (a) => a.country_code && countriesInRegion?.includes(a.country_code)
-      ),
-    [customer?.addresses, countriesInRegion]
-  )
-
-  const setFormAddress = (
-    address?: HttpTypes.StoreCartAddress,
-    email?: string
-  ) => {
-    address &&
-      setFormData((prevState: Record<string, any>) => ({
-        ...prevState,
-        "shipping_address.first_name": address?.first_name || "",
-        "shipping_address.last_name": address?.last_name || "",
-        "shipping_address.address_1": address?.address_1 || "",
-        "shipping_address.company": address?.company || "",
-        "shipping_address.postal_code": address?.postal_code || "",
-        "shipping_address.city": address?.city || "",
-        "shipping_address.country_code": address?.country_code || "",
-        "shipping_address.province": address?.province || "",
-        "shipping_address.phone": address?.phone || "",
-      }))
-
-    email &&
-      setFormData((prevState: Record<string, any>) => ({
-        ...prevState,
-        email: email,
-      }))
-  }
-
   useEffect(() => {
-    // Ensure cart is not null and has a shipping_address before setting form data
-    if (cart && cart.shipping_address) {
-      setFormAddress(cart?.shipping_address, cart?.email)
+    // Load saved usernames from cart metadata if available
+    if (cart?.metadata) {
+      setFormData((prevState) => ({
+        ...prevState,
+        roblox_username: (cart.metadata?.roblox_username as string) || prevState.roblox_username,
+        discord_username: (cart.metadata?.discord_username as string) || prevState.discord_username,
+      }))
     }
 
     if (cart && !cart.email && customer?.email) {
-      setFormAddress(undefined, customer.email)
+      setFormData((prevState) => ({
+        ...prevState,
+        email: customer.email,
+      }))
     }
-  }, [cart]) // Add cart as a dependency
+
+    if (cart?.shipping_address?.country_code) {
+      setFormData((prevState) => ({
+        ...prevState,
+        "shipping_address.country_code": cart?.shipping_address?.country_code,
+      }))
+    }
+  }, [cart, customer])
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -94,75 +66,48 @@ const ShippingAddress = ({
 
   return (
     <>
-      {customer && (addressesInRegion?.length || 0) > 0 && (
-        <Container className="mb-6 flex flex-col gap-y-4 p-5">
-          <p className="text-small-regular">
-            {`Hi ${customer.first_name}, do you want to use one of your saved addresses?`}
-          </p>
-          <AddressSelect
-            addresses={customer.addresses}
-            addressInput={
-              mapKeys(formData, (_, key) =>
-                key.replace("shipping_address.", "")
-              ) as HttpTypes.StoreCartAddress
-            }
-            onSelect={setFormAddress}
-          />
-        </Container>
-      )}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="mb-6 bg-secondary/10 border border-border/20 rounded-xl p-6">
+        <h3 className="text-lg font-bold text-foreground mb-2 flex items-center gap-2">
+          <svg className="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          </svg>
+          Digital Delivery Information
+        </h3>
+        <p className="text-sm text-muted-foreground mb-4">
+          Your item will be delivered digitally. Please provide your username details below.
+        </p>
+      </div>
+
+      {/* Hidden fields to generate placeholder shipping address */}
+      <input type="hidden" name="shipping_address.first_name" value={formData.roblox_username || "Digital"} />
+      <input type="hidden" name="shipping_address.last_name" value="Customer" />
+      <input type="hidden" name="shipping_address.address_1" value="Digital Goods - No Physical Shipping" />
+      <input type="hidden" name="shipping_address.company" value="" />
+      <input type="hidden" name="shipping_address.postal_code" value="00000" />
+      <input type="hidden" name="shipping_address.city" value="Online" />
+      <input type="hidden" name="shipping_address.province" value="" />
+      <input type="hidden" name="shipping_address.phone" value="" />
+
+      {/* Custom metadata fields */}
+      <input type="hidden" name="metadata.roblox_username" value={formData.roblox_username} />
+      <input type="hidden" name="metadata.discord_username" value={formData.discord_username} />
+
+      <div className="grid grid-cols-1 gap-4">
         <Input
-          label="First name"
-          name="shipping_address.first_name"
-          autoComplete="given-name"
-          value={formData["shipping_address.first_name"]}
+          label="Roblox Username"
+          name="roblox_username"
+          value={formData.roblox_username}
           onChange={handleChange}
           required
-          data-testid="shipping-first-name-input"
+          data-testid="roblox-username-input"
         />
         <Input
-          label="Last name"
-          name="shipping_address.last_name"
-          autoComplete="family-name"
-          value={formData["shipping_address.last_name"]}
+          label="Discord Username"
+          name="discord_username"
+          value={formData.discord_username}
           onChange={handleChange}
           required
-          data-testid="shipping-last-name-input"
-        />
-        <Input
-          label="Address"
-          name="shipping_address.address_1"
-          autoComplete="address-line1"
-          value={formData["shipping_address.address_1"]}
-          onChange={handleChange}
-          required
-          data-testid="shipping-address-input"
-        />
-        <Input
-          label="Company"
-          name="shipping_address.company"
-          value={formData["shipping_address.company"]}
-          onChange={handleChange}
-          autoComplete="organization"
-          data-testid="shipping-company-input"
-        />
-        <Input
-          label="Postal code"
-          name="shipping_address.postal_code"
-          autoComplete="postal-code"
-          value={formData["shipping_address.postal_code"]}
-          onChange={handleChange}
-          required
-          data-testid="shipping-postal-code-input"
-        />
-        <Input
-          label="City"
-          name="shipping_address.city"
-          autoComplete="address-level2"
-          value={formData["shipping_address.city"]}
-          onChange={handleChange}
-          required
-          data-testid="shipping-city-input"
+          data-testid="discord-username-input"
         />
         <CountrySelect
           name="shipping_address.country_code"
@@ -173,15 +118,8 @@ const ShippingAddress = ({
           required
           data-testid="shipping-country-select"
         />
-        <Input
-          label="State / Province"
-          name="shipping_address.province"
-          autoComplete="address-level1"
-          value={formData["shipping_address.province"]}
-          onChange={handleChange}
-          data-testid="shipping-province-input"
-        />
       </div>
+
       <div className="my-8">
         <Checkbox
           label="Billing address same as shipping address"
@@ -191,7 +129,8 @@ const ShippingAddress = ({
           data-testid="billing-address-checkbox"
         />
       </div>
-      <div className="grid grid-cols-2 gap-4 mb-4">
+
+      <div className="grid grid-cols-1 gap-4 mb-4">
         <Input
           label="Email"
           name="email"
@@ -203,14 +142,20 @@ const ShippingAddress = ({
           required
           data-testid="shipping-email-input"
         />
-        <Input
-          label="Phone"
-          name="shipping_address.phone"
-          autoComplete="tel"
-          value={formData["shipping_address.phone"]}
-          onChange={handleChange}
-          data-testid="shipping-phone-input"
-        />
+      </div>
+
+      <div className="mt-6 bg-primary/5 border border-primary/20 rounded-xl p-4">
+        <div className="flex items-start gap-3">
+          <svg className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <p className="text-sm font-semibold text-foreground mb-1">How Delivery Works</p>
+            <p className="text-xs text-muted-foreground">
+              After successful payment, your purchased items will be delivered to your Roblox account. You may be contacted via Discord if needed. Please ensure both usernames are correct.
+            </p>
+          </div>
+        </div>
       </div>
     </>
   )

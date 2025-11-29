@@ -161,7 +161,7 @@ const StoreTemplate = ({
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.4 }}
-                className="grid grid-cols-2 w-full small:grid-cols-3 medium:grid-cols-3 gap-6"
+                className="grid grid-cols-2 w-full small:grid-cols-4 medium:grid-cols-5 gap-6"
                 data-testid="products-list"
               >
                 {filteredProducts.map((product, index) => (

@@ -1,9 +1,15 @@
+"use client"
+
 import { Text } from "@medusajs/ui"
 import { getProductPrice } from "@lib/util/get-product-price"
 import { HttpTypes } from "@medusajs/types"
 import LocalizedClientLink from "@modules/common/components/localized-client-link"
 import Thumbnail from "../thumbnail"
 import PreviewPrice from "./price"
+import { addToCart } from "@lib/data/cart"
+import { useToast } from "@components/ui/toast"
+import { useParams } from "next/navigation"
+import { useState } from "react"
 
 export default function ProductPreview({
   product,
@@ -14,6 +20,10 @@ export default function ProductPreview({
   isFeatured?: boolean
   region: HttpTypes.StoreRegion
 }) {
+  const { countryCode } = useParams() as { countryCode: string }
+  const { showToast } = useToast()
+  const [isAdding, setIsAdding] = useState(false)
+
   const { cheapestPrice } = getProductPrice({
     product,
   })
@@ -42,6 +52,50 @@ export default function ProductPreview({
     return false
   })
 
+  // Get the first available variant for single-variant products
+  const firstVariant = product.variants?.[0]
+
+  const handleAddToCart = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+
+    if (!firstVariant?.id || isOutOfStock) return
+
+    setIsAdding(true)
+
+    const result = await addToCart({
+      variantId: firstVariant.id,
+      quantity: 1,
+      countryCode,
+    })
+
+    setIsAdding(false)
+
+    if (result) {
+      if (result.success) {
+        showToast({
+          title: "Success!",
+          description: result.message,
+          variant: "success",
+          duration: 3000,
+        })
+      } else if (result.alreadyExists) {
+        showToast({
+          title: "Item Already in Cart",
+          description: result.message,
+          variant: "warning",
+          duration: 4000,
+        })
+      } else {
+        showToast({
+          title: "Error",
+          description: result.message,
+          variant: "error",
+          duration: 4000,
+        })
+      }
+    }
+  }
 
   return (
     <LocalizedClientLink href={`/products/${product.handle}`} className="group block h-full">
@@ -119,11 +173,27 @@ export default function ProductPreview({
                 Out Of Stock
               </button>
             ) : (
-              <button className="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/20 group-hover:shadow-primary/40 group-hover:scale-[1.02]">
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-                </svg>
-                Add to Cart
+              <button
+                onClick={handleAddToCart}
+                disabled={isAdding}
+                className="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/20 group-hover:shadow-primary/40 group-hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isAdding ? (
+                  <>
+                    <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                    </svg>
+                    Adding...
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
+                    </svg>
+                    Add to Cart
+                  </>
+                )}
               </button>
             )}
           </div>

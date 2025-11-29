@@ -9,7 +9,7 @@ export interface ToastProps {
   id: string
   title?: string
   description?: string
-  variant?: "default" | "success" | "error"
+  variant?: "default" | "success" | "error" | "warning"
   duration?: number
   onClose?: () => void
 }
@@ -24,6 +24,7 @@ const Toast = ({ id, title, description, variant = "default", onClose }: ToastPr
         "group pointer-events-auto relative flex w-full items-center justify-between space-x-4 overflow-hidden rounded-lg border p-6 pr-8 shadow-lg transition-all",
         variant === "success" && "border-green-500 bg-green-50 dark:bg-green-950/20",
         variant === "error" && "border-red-500 bg-red-50 dark:bg-red-950/20",
+        variant === "warning" && "border-orange-500 bg-orange-50 dark:bg-orange-950/20",
         variant === "default" && "border bg-card"
       )}
     >
@@ -32,7 +33,8 @@ const Toast = ({ id, title, description, variant = "default", onClose }: ToastPr
           <div className={cn(
             "text-sm font-semibold",
             variant === "success" && "text-green-900 dark:text-green-100",
-            variant === "error" && "text-red-900 dark:text-red-100"
+            variant === "error" && "text-red-900 dark:text-red-100",
+            variant === "warning" && "text-orange-900 dark:text-orange-100"
           )}>
             {title}
           </div>
@@ -41,7 +43,8 @@ const Toast = ({ id, title, description, variant = "default", onClose }: ToastPr
           <div className={cn(
             "text-sm opacity-90",
             variant === "success" && "text-green-800 dark:text-green-200",
-            variant === "error" && "text-red-800 dark:text-red-200"
+            variant === "error" && "text-red-800 dark:text-red-200",
+            variant === "warning" && "text-orange-800 dark:text-orange-200"
           )}>
             {description}
           </div>
@@ -51,7 +54,8 @@ const Toast = ({ id, title, description, variant = "default", onClose }: ToastPr
         className={cn(
           "absolute right-2 top-2 rounded-md p-1 text-foreground/50 opacity-0 transition-opacity hover:text-foreground focus:opacity-100 focus:outline-none focus:ring-2 group-hover:opacity-100",
           variant === "success" && "text-green-600 hover:text-green-700",
-          variant === "error" && "text-red-600 hover:text-red-700"
+          variant === "error" && "text-red-600 hover:text-red-700",
+          variant === "warning" && "text-orange-600 hover:text-orange-700"
         )}
         onClick={onClose}
       >

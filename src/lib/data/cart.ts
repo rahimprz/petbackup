@@ -57,10 +57,16 @@ export async function getOrSetCart(countryCode: string) {
     throw new Error(`Region not found for country code: ${countryCode}`)
   }
 
-  let cart = await retrieveCart(undefined, 'id,region_id')
+  let cart = await retrieveCart(undefined, 'id,region_id,completed_at')
 
   const headers = {
     ...(await getAuthHeaders()),
+  }
+
+  // If cart exists but is already completed, remove it and create a new one
+  if (cart && cart.completed_at) {
+    await removeCartId()
+    cart = null
   }
 
   if (!cart) {
@@ -130,28 +136,55 @@ export async function addToCart({
     throw new Error("Error retrieving or creating cart")
   }
 
+  // Check if the variant already exists in the cart
+  const cartWithItems = await retrieveCart(cart.id)
+  const existingItem = cartWithItems?.items?.find(
+    (item: any) => item.variant_id === variantId
+  )
+
+  if (existingItem) {
+    return {
+      success: false,
+      alreadyExists: true,
+      message: "Item is already in cart! Head to cart to increase quantity.",
+    }
+  }
+
   const headers = {
     ...(await getAuthHeaders()),
   }
 
-  await sdk.store.cart
-    .createLineItem(
-      cart.id,
-      {
-        variant_id: variantId,
-        quantity,
-      },
-      {},
-      headers
-    )
-    .then(async () => {
-      const cartCacheTag = await getCacheTag("carts")
-      revalidateTag(cartCacheTag)
+  try {
+    await sdk.store.cart
+      .createLineItem(
+        cart.id,
+        {
+          variant_id: variantId,
+          quantity,
+        },
+        {},
+        headers
+      )
+      .then(async () => {
+        const cartCacheTag = await getCacheTag("carts")
+        revalidateTag(cartCacheTag)
 
-      const fulfillmentCacheTag = await getCacheTag("fulfillment")
-      revalidateTag(fulfillmentCacheTag)
-    })
-    .catch(medusaError)
+        const fulfillmentCacheTag = await getCacheTag("fulfillment")
+        revalidateTag(fulfillmentCacheTag)
+      })
+
+    return {
+      success: true,
+      alreadyExists: false,
+      message: "Added to cart!",
+    }
+  } catch (error: any) {
+    return {
+      success: false,
+      alreadyExists: false,
+      message: error.message || "Failed to add item to cart",
+    }
+  }
 }
 
 export async function updateLineItem({
@@ -341,6 +374,10 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
       throw new Error("No existing cart found when setting addresses")
     }
 
+    // Extract custom metadata for digital delivery
+    const robloxUsername = formData.get("metadata.roblox_username") as string
+    const discordUsername = formData.get("metadata.discord_username") as string
+
     const data = {
       shipping_address: {
         first_name: formData.get("shipping_address.first_name"),
@@ -355,6 +392,11 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         phone: formData.get("shipping_address.phone"),
       },
       email: formData.get("email"),
+      // Save custom metadata for digital delivery
+      metadata: {
+        roblox_username: robloxUsername,
+        discord_username: discordUsername,
+      },
     } as any
 
     const sameAsBilling = formData.get("same_as_billing")
